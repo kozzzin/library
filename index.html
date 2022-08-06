@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <script type="text/javascript" src="./js/script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>Library system</h1>
+            </div>
+            <div class="form">
+                <form id="bookAdd" action="#">
+                    <label>
+                        <span>Title:</span> <input type="text" name="title" id="title" placeholder="The lost summer" required>
+                    </label>
+                    <label>
+                        <span>Author:</span> <input type="text" name="author" id="author" placeholder="Will Smith" required>
+                    </label>
+                    <label>
+                        <span>Pages:</span> <input type="number" name="pages" id="pages" min="0" step="1" placeholder="420" required>
+                    </label>
+                    
+                    <label>
+                        <span>Read: </span><input type="checkbox" id="read" name="read" value="read">
+                    </label>
+                    <input type="submit" value="Add book">
+                </form>
+            </div>
+        </div>
+        <div class="main">
+           
+        </div>
+        <div class="footer">
+
+        </div>
+    </div>
+    
+</body>
+</html>
