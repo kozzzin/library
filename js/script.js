@@ -1,123 +1,142 @@
-const library = []
-
-class NewBook {
+class Book {
     constructor(title, author, pages, read, cover = './img/orange-cover.jpeg') {
-        this.bookId = library.length;
+        this.bookId = library.shelves.length;
         this.bookCover = cover,
         this.bookTitle = title,
         this.bookAuthor = author,
         this.bookRead = read,
-        this.bookPages = pages    
+        this.bookPages = pages
     }
+
+
     addToLibrary(library) {
-        library.push(this);
+        library.addToStorage(this);
     }
 }
 
 
-for (let i = 0; i < 5; i++) {
+const library = (function() {
+    let storage = [];
+    return {
+        init() {
+            for (let i = 0; i < 5; i++) {
+                const book = new Book (
+                    'Look to this book',
+                    'J.K.Rowling Stone',
+                    '678',
+                    true
+                );
+    
+            book.addToLibrary(library);
+            }
+        },
 
-    const book = new NewBook (
-        'Look to this book',
-        'J.K.Rowling Stone',
-        '678',
-        true
-    );
+        addToStorage(book) {
+            storage.push(book)
+        },
 
-   book.addToLibrary(library);
-   console.log(library);
-}
+        get shelves() {
+            return storage;
+        },
 
-function cardClick() {
-    const target = this.event.target;
-    const cardID = target.getAttribute('data-id');
-    if (target.id === 'deleteButton') {
-        deleteCard(cardID,target);
-    } else if (target.id === 'readBox') {
-        toggleRead(cardID);
+        deleteBook(index) {
+            storage.splice(index,1)
+        },
+
+        toggleRead(cardID) {
+            const index = storage.findIndex(x => x.bookId == cardID);
+            storage[index].bookRead = storage[index].bookRead ? false : true;
+        }
+    
+
     }
-    // console.log(this.event.target.getAttribute('data-id'));
-}
+})();
 
-function deleteCard(cardID,elementID) {
-    const index = library.findIndex(x => x.bookId == cardID);
 
-    if (library[index] != undefined) {
-        library.splice(index,1);
-        const target = document.querySelector(`[data-id="${cardID}"]`);
-        target.remove();
+const interface = (function(){    
+    return {
+        cardClick(event) {
+            const target = event.target;
+            const cardID = target.getAttribute('data-id');
+            if (target.id === 'deleteButton') {
+                this.deleteCard(cardID,target);
+            } else if (target.id === 'readBox') {
+                library.toggleRead(cardID);
+            }
+        },
+
+        deleteCard(cardID,elementID) {
+            const index = library.shelves.findIndex(x => x.bookId == cardID);
+
+            if (library.shelves[index] != undefined) {
+                library.deleteBook(index);
+                const target = document.querySelector(`[data-id="${cardID}"]`);
+                target.remove();
+            }
+        },
+
+        drawCards() {
+            document.querySelector('.main').innerHTML = '';
+            for (let i = 0; i < library.shelves.length; i++) {
+                const checked = library.shelves[i].bookRead ? 'checked' : '';
+                const HTMLTemplate =
+                `
+                <div class="book-card" id="${library.shelves[i].bookId}" data-id="${library.shelves[i].bookId}" >
+                <div class="book-cover">
+                    <!--<img src="${library.shelves[i].bookCover}" alt="">-->
+                </div>
+                <div class="book-info">
+                    <ul>
+                        <li class="title">${library.shelves[i].bookTitle}</li>
+                        <li class="author">${library.shelves[i].bookAuthor}</li>
+                        <li class="pages">Pages: ${library.shelves[i].bookPages}</li>
+                        <li class="read">
+                        <label for="">Read it:
+                            <input id="readBox" data-id="${library.shelves[i].bookId}" type="checkbox" ${checked} onclick="interface.cardClick(event)">
+                        </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="book-controls">
+                    <div class="delete">
+                        <button id="deleteButton" data-id="${library.shelves[i].bookId}" onclick="interface.cardClick(event)">Delete</button>
+                    </div>
+                </div>
+                </div>
+                `;
+                document.querySelector('.main').innerHTML += HTMLTemplate;
+                const buttons = document.querySelectorAll('.button');
+            }
+        },
+
+        listenToSubmit() {
+            document.querySelector('form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = Array.from(e.target.elements);
+                let dataForBook = [];
+                formData.forEach(e => {
+                    if (e.type === 'checkbox') {
+                        dataForBook.push(e.checked);
+                    } else if (e.type != 'submit') {
+                        dataForBook.push(e.value);
+                        e.value = '';
+                    }
+                });
+
+                let book = new Book (
+                    ...dataForBook
+                );
+
+                book.addToLibrary(library);
+                this.drawCards();
+            });
+        }
     }
-}
-
-function toggleRead(cardID) {
-    const index = library.findIndex(x => x.bookId == cardID);
-    if (library[index].bookRead) {
-        library[index].bookRead = false;
-    } else {
-        library[index].bookRead = true;
-    }
-}
+})();
 
 
 document.addEventListener('DOMContentLoaded',function() {
-    function drawCards() {
-        document.querySelector('.main').innerHTML = '';
-        for (let i = 0; i < library.length; i++) {
-            const checked = library[i].bookRead ? 'checked' : '';
-            const HTMLTemplate = 
-            `
-            <div class="book-card" id="${library[i].bookId}" data-id="${library[i].bookId}" >
-            <div class="book-cover">
-                <!--<img src="${library[i].bookCover}" alt="">-->
-            </div>
-            <div class="book-info">
-                <ul>
-                    <li class="title">${library[i].bookTitle}</li>
-                    <li class="author">${library[i].bookAuthor}</li>
-                    <li class="pages">Pages: ${library[i].bookPages}</li>
-                    <li class="read">
-                    <label for="">Read it: 
-                        <input id="readBox" data-id="${library[i].bookId}" type="checkbox" ${checked} onclick="cardClick()">
-                    </label>
-                    </li>
-                </ul>
-            </div>
-            <div class="book-controls">
-                <div class="delete">
-                    <button id="deleteButton" data-id="${library[i].bookId}" onclick="cardClick()">Delete</button>
-                </div>
-            </div>
-            </div>
-            `;
-            document.querySelector('.main').innerHTML += HTMLTemplate;
-            const buttons = document.querySelectorAll('.button');
-            console.log(buttons);
-        }
-    }
-
-    drawCards();
-    
-
-    // CLEAR FORM DATA!
-
-    document.querySelector('form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const formData = Array.from(e.target.elements);
-        let dataForBook = [];
-        formData.forEach(e => {
-            if (e.type === 'checkbox') {
-                dataForBook.push(e.checked);
-            } else if (e.type != 'submit') {
-                dataForBook.push(e.value);
-            }
-        });
-
-        let book = new NewBook (
-            ...dataForBook
-        );
-
-        
-        book.addToLibrary(library);
-        drawCards();
-    });
+    library.init();
+    interface.drawCards();
+    interface.listenToSubmit();
 });
