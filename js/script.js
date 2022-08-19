@@ -59,7 +59,6 @@ function toggleRead(cardID) {
 }
 
 
-
 document.addEventListener('DOMContentLoaded',function() {
     function drawCards() {
         document.querySelector('.main').innerHTML = '';
@@ -113,12 +112,12 @@ document.addEventListener('DOMContentLoaded',function() {
             }
         });
 
-        console.log(formData.title);
-
         let book = new NewBook (
             ...dataForBook
         );
+
+        
         book.addToLibrary(library);
-            drawCards();
+        drawCards();
     });
 });
