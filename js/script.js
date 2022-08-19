@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded',function() {
                 dataForBook.push(e.checked);
             } else if (e.type != 'submit') {
                 dataForBook.push(e.value);
+                e.value = '';
             }
         });
 
