@@ -262,3 +262,24 @@ button:hover {
 button.read-class {
     background-color: lightgreen;
 }
+
+input:valid {
+    border-color: lightgreen;
+}
+
+input:invalid {
+    border-color: lightcoral;
+}
+
+.wrong {
+    background-color: crimson;
+    color: beige;
+    display: block;
+    position: absolute;
+    display: block;
+    /* padding: 5px; */
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 0.5rem;
+    line-height: 1rem;
+}

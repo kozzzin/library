@@ -139,4 +139,59 @@ document.addEventListener('DOMContentLoaded',function() {
     library.init();
     interface.drawCards();
     interface.listenToSubmit();
+
+    disableSubmit();
+
+
+    document.querySelectorAll('input')
+        .forEach((input) => {
+            input.addEventListener(
+                'keyup',
+                (e) => {
+                    checkInput(e);
+                    console.log('up', e);
+                    updateSubmit();
+                },
+            );
+        });
 });
+
+function disableSubmit() {
+    const submit = document.querySelector('input[type="submit"]');
+    submit.disabled = true;
+}
+
+function checkInput(e) {
+    const wrongClass = 'wrong';
+    const errorLabel = e.target.parentNode.querySelector(`.${wrongClass}`);
+    
+    try {
+        errorLabel.remove();
+    } catch {
+
+    }
+
+    if (!e.target.validity.valid) {
+        const div = document.createElement('div');
+        div.className = wrongClass;
+        div.innerText = 'required field';
+        div.style = `
+            left: ${e.target.offsetLeft + e.target.offsetWidth * 0.1}px;
+            width: ${e.target.offsetWidth * 0.8}px;
+            top: ${e.target.offsetTop + e.target.offsetHeight + 3}px;
+        `;
+        e.target.parentNode.append(div);
+    } 
+    
+}
+
+function updateSubmit() {
+    const formIsValid = document.querySelector('form').checkValidity();
+    if (formIsValid) {
+        document.querySelector('input[type="submit"]')
+            .disabled = false;
+    }
+}
+
+// make submit button invalid and disabled
+// before everything is fine
